@@ -11,21 +11,12 @@ export function useOpenCV() {
     import("@techstark/opencv-js").then((modulo) => {
       const cvInstancia = modulo.default;
 
-      // opencv-js expõe um callback onRuntimeInitialized quando o WASM termina de carregar
-      if (cvInstancia.getBuildInformation) {
-        // já estava pronto (raro, mas possível em recarregamentos)
+      cvInstancia.onRuntimeInitialized = () => {
         if (montado) {
           setCv(cvInstancia);
           setPronto(true);
         }
-      } else {
-        cvInstancia.onRuntimeInitialized = () => {
-          if (montado) {
-            setCv(cvInstancia);
-            setPronto(true);
-          }
-        };
-      }
+      };
     });
 
     return () => {
